@@ -19,10 +19,11 @@ RUN dotnet build "PKSS.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "PKSS.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-RUN curl -O https://www.mirea.ru/upload/medialibrary/80f/MIREA_Gerb_Colour.png
-
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN apt-get update && \
+    apt-get install -y curl
+RUN curl -O https://www.mirea.ru/upload/medialibrary/80f/MIREA_Gerb_Colour.png
 ONBUILD CMD ["Сборка и запуск произведены. Автор: Куппа М.Н."]
 ENTRYPOINT ["dotnet", "PKSS.dll"]
